@@ -1,73 +1,68 @@
-#include <cstring>
-#include <iostream>
 #include "Event.h"
-#include "Time.h"
-#include "Timing.h"
 
-using namespace std;
+namespace planning{
+    int Event::currentCode = 1;
 
-Event::Event() {
-    setCode(1);
-    title = nullptr;
-    setTitle("default");
-    timing->setDay("Aucun");
-    timing->setStart(Time(0,0));
-    timing->setDuration(Time(0,0));
-}
+    Event::Event() {
+        setCode(1);
+        title = nullptr;
+        setTitle("default");
+        timing = nullptr;
+    }
 
-Event::Event(int c, const char* t, const Timing &temp) {
-    setCode(c);
-    title = nullptr;
-    setTitle(t);
-    timing->setDay(temp.getDay());
-    timing->setStart(temp.getStart());
-    timing->setDuration(temp.getDuration());
-}
+    Event::Event(int c, const char* t) {
+        setCode(c);
+        title = nullptr;
+        setTitle(t);
+        timing = nullptr;
+    }
 
-Event::Event(const Event& e)
-{
-    setCode(e.getCode());
-    title = nullptr;
-    setTitle(e.getTitle());
-}
+    Event::Event(const Event& e)
+    {
+        setCode(e.getCode());
+        title = nullptr;
+        setTitle(e.getTitle());
+        timing = nullptr;
+        timing = new Timing(*(e.timing));
+    }
 
-Event::~Event()
-{
-    delete title;
-    delete timing;
-}
+    Event::~Event()
+    {
+        delete title;
+        delete timing;
+    }
 
-void Event::display() const{
-    cout << "title = " << title << endl;
-    cout << "code = " << code << endl;
-    timing->display();
-}
+    void Event::display() const{
+        cout << "title = " << title << endl;
+        cout << "code = " << code << endl;
+        if (timing != nullptr) timing->display();
+    }
 
-int Event::getCode() const {
-    return code;
-}
+    int Event::getCode() const {
+        return code;
+    }
 
-const char* Event::getTitle() const {
-    return title;
-}
+    const char* Event::getTitle() const {
+        return title;
+    }
 
-void Event::setTitle(const char * t) {
-    if (title != nullptr) delete title;
-    title = new char [strlen(t)+ 1];
-    strcpy(title, t);
-}
+    void Event::setTitle(const char * t) {
+        if (title != nullptr) delete title;
+        title = new char [strlen(t)+ 1];
+        strcpy(title, t);
+    }
 
-void Event::setCode(int c) {
-    if (c < 0) return;
-    code = c;
-}
+    void Event::setCode(int c) {
+        if (c < 0) return;
+        code = c;
+    }
 
-void Event::setTiming(const Timing& temp) {
-    timing->setDay(temp.getDay());
-    timing->setDay(temp.getDay());
-    timing->setDay(temp.getDay());
-}
+    void Event::setTiming(const Timing& temp) {
+        if(timing != nullptr) delete timing;
+        timing = new Timing(temp);
+    }
 
-Timing Event::getTiming() const {
-    cout << "feur" << endl;
+    Timing Event::getTiming() const {
+        return *timing;
+    }
 }

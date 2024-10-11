@@ -1,19 +1,17 @@
 #include <stdlib.h>
 #include <iostream>
-using namespace std;
 #include "Time.h"
 #include "Timing.h"
 #include "Event.h"
 
-//using namespace planning;
+using namespace planning;
+using namespace std;
 
 int  Menu();
 void Essai1();
 void Essai2();
 void Essai3();       
-
-
-//void Essai4();
+void Essai4();
 
 int main(int argc,char* argv[])
 {
@@ -29,7 +27,7 @@ int main(int argc,char* argv[])
       case 1 : Essai1(); break;
       case 2 : Essai2(); break;
       case 3 : Essai3(); break;
-      //case 4 : Essai4(); break;
+      case 4 : Essai4(); break;
       default : fini = true ; break;
     }
   }
@@ -59,6 +57,7 @@ int Menu()
 /*******************************************************************************************************/
 /*** Tests de la classe Time **************************************************************************/
 /*******************************************************************************************************/
+
 void Essai1()
 {
   cout << endl << "(1) ***** Test du constructeur par defaut de Time *****************************" << endl;
@@ -175,7 +174,7 @@ void Essai3()
     event.display();
     cout << endl;
   } 
-  /*
+  
   cout << endl << "(2) ***** Test des setters et getters ******************************************" << endl;
   {
     Event event;
@@ -190,7 +189,7 @@ void Essai3()
     event.getTiming().display();
     cout << endl;
   }
-
+  
   cout << endl << "(3) ***** Test du constructeur d'initialisation ********************************" << endl;
   {
     Event event(2,"Cinema avec les potos");
@@ -198,7 +197,7 @@ void Essai3()
     event.display();
     cout << endl;
   }
-
+  
   cout << endl << "(4) ***** Test du constructeur de copie ****************************************" << endl;
   {
     Event event1(1,"Labo C++");
@@ -219,25 +218,31 @@ void Essai3()
     cout << "event1 (APRES) : ";
     event1.display();
     cout << endl << endl;
-  }*/
+  }
 }
 
 /*******************************************************************************************************/
 /*** Tests des variables statiques utiles **************************************************************/
 /*******************************************************************************************************/
-/*
+
 void Essai4()
 {
   cout << endl << "(1) ***** Tests de base des jours de la semaine ********************************" << endl;
   cout << "Premier jour de la semaine : " << Timing::MONDAY << endl;
-  // ne pas oublier les autres jours de la semaine...
+  cout << "Deuxième jour de la semaine : " << Timing::TUESDAY << endl;
+  cout << "Troisième jour de la semaine : " << Timing::WEDNESDAY << endl;
+  cout << "Quatrième jour de la semaine : " << Timing::THURSDAY << endl;
+  cout << "Cinquième jour de la semaine : " << Timing::FRIDAY << endl;
+  cout << "Sixième jour de la semaine : " << Timing::SATURDAY << endl;
   cout << "Dernier jour de la semaine : " << Timing::SUNDAY << endl << endl;
+  
+
   
   cout << endl << "(2) ***** Tests de base de la variable Event::currentCode **********************" << endl;
   cout << "Event::currentCode = " << Event::currentCode << endl;
   Event::currentCode++;
   cout << "Event::currentCode = " << Event::currentCode << endl << endl;
-
+  
   cout << endl << "(3) ***** Creation d'evenements ************************************************" << endl;
   Event::currentCode = 1;
 
@@ -270,4 +275,4 @@ void Essai4()
   cout << "e1.currentCode = " << e1.currentCode << endl;
   cout << "e2.currentCode = " << e2.currentCode << endl;
   cout << "e3.currentCode = " << e3.currentCode << endl << endl;
-}*/
+}

@@ -1,7 +1,8 @@
 #ifndef TIME_H
 #define TIME_H
 
-class Time {
+namespace planning{
+    class Time {
     private :
         int hours;
         int minutes;
@@ -16,5 +17,8 @@ class Time {
         void setHour(int h);
         void setMinute(int m);
         ~Time();
-};
+    };
+
+}
+
 #endif

@@ -1,15 +1,20 @@
 #ifndef EVENT_H
 #define EVENT_H
 #include "Timing.h"
+#include <iostream>
+#include <string.h>
+using namespace std;
 
-class Event{
+namespace planning{
+    class Event{
     private:
         int code;
         char* title;
         Timing* timing;
     public:
+        static int currentCode;
         Event();
-        Event (int c, const char* t, const Timing &m);
+        Event (int c, const char* t);
         Event (const Event& e);
         void display() const;
         int getCode() const;
@@ -19,5 +24,6 @@ class Event{
         void setTiming(const Timing& t);
         Timing getTiming() const;
         ~Event();
-};
+    };
+}
 #endif
