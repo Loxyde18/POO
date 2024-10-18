@@ -139,26 +139,29 @@ void MyWindow::on_pushButtonLogin_clicked()
 
   // TO DO
   int position = estPresent(nom);
-  printf("%d\n", position);
   if(position == 0 && nouvelUtilisateur == 0)
   {
-    printf("Pas trouvé dans le fichier\n");
+    setResultat("Utilisateur Pas Trouvé =(");
+  }
+  else
+  {
+    setResultat("Bonjour !");
   }
 
   if(nouvelUtilisateur == 0)
   {
     verif = verifieMotDePasse(position, motDePasse);
-    printf("verif :%d\n", verif);
   }
 
   if(verif == 0 && position > 0)
   {
-    printf("mdp incorrect\n");
+    setResultat("Mot De Passe Incorrect =(");
   }
 
   if(nouvelUtilisateur == 1)
   {
     ajouteUtilisateur(nom, motDePasse);
+    setResultat("Ajouté ! =)");
   }
   printf("Clic sur bouton LOGIN : --%s--%s--%d--\n",nom,motDePasse,nouvelUtilisateur);
 }
@@ -167,5 +170,15 @@ void MyWindow::on_pushButtonLogin_clicked()
 void MyWindow::on_pushButtonAfficheFichier_clicked()
 {
   // TO DO
+  videTableUtilisateurs();
+  int i = 0;
+  UTILISATEUR vect[50];
+  int cpt = listeUtilisateurs(vect);
+  printf("%d", cpt);
+  while(i < cpt)
+  {
+    ajouteTupleTableUtilisateurs(vect[i].nom, vect[i].hash);
+    i++;
+  }
   printf("Clic sur bouton AFFICHER\n");
 }

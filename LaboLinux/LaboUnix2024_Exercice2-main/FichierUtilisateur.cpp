@@ -57,7 +57,7 @@ void afficher()
 
     UTILISATEUR utilisateur;
 
-    while(read(fb, &utilisateur, sizeof(utilisateur)) > 0)
+    while(read(fb, &utilisateur, sizeof(UTILISATEUR)) > 0)
     {
       printf("Nom : %s Hash : %d\n", utilisateur.nom, utilisateur.hash);
     }
@@ -77,13 +77,14 @@ void ajouteUtilisateur(const char* nom, const char* motDePasse)
 
     UTILISATEUR utilisateur;
 
-    strncpy(utilisateur.nom, nom, sizeof(utilisateur.nom) - 1);
+    strcpy(utilisateur.nom, nom);
     utilisateur.hash = hash(motDePasse);
 
 
     lseek(fb, 0, SEEK_END);
 
-    if (write(fb, &utilisateur, sizeof(utilisateur)) == -1) {
+    if (write(fb, &utilisateur, sizeof(UTILISATEUR)) == -1)
+    {
         std::cerr << "Erreur lors de l'écriture dans le fichier." << std::endl;
     }
 
@@ -114,8 +115,20 @@ int verifieMotDePasse(int pos, const char* motDePasse)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-int listeUtilisateurs(UTILISATEUR *vecteur) // le vecteur doit etre suffisamment grand
+int listeUtilisateurs(UTILISATEUR *vecteur) // vecteur est un pointeur vers UTILISATEUR
 {
-  // TO DO
-  return 0;
+    int fb = open("utilisateurs.dat", O_RDONLY ), cpt = 0;
+    if (fb == -1)
+    {
+        std::cerr << "Erreur : Impossible d'ouvrir ou de créer le fichier." << std::endl;
+        return -1;
+    }
+
+    while(cpt < 50 && read(fb, &vecteur[cpt], sizeof(UTILISATEUR)) > 0)
+    {
+      cpt++;
+    }
+
+    close(fb);
+    return cpt;
 }
