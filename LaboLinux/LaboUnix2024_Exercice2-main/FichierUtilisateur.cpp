@@ -2,11 +2,10 @@
 
 int estPresent(const char* nom)
 {
-  int fb = open("utilisateurs.dat", O_RDWR | O_CREAT, 0644);
-
+  int fb = open("utilisateurs.dat", O_RDONLY);
+  
   if (fb == -1)
   {
-    std::cerr << "Erreur : Impossible d'ouvrir ou de créer le fichier." << std::endl;
     return -1;
   }
     
@@ -48,12 +47,12 @@ int hash(const char* motDePasse)
 
 void afficher()
 {
-  int fb = open("utilisateurs.dat", O_RDWR | O_CREAT, 0644);
-    
-    if (fb == -1) {
-        std::cerr << "Erreur : Impossible d'ouvrir ou de créer le fichier." << std::endl;
-        return; // Arrêter si le fichier ne peut pas être ouvert
-    }
+  int fb = open("utilisateurs.dat", O_RDONLY);
+  
+  if(fb == -1)
+  {
+    return;
+  }
 
     UTILISATEUR utilisateur;
 
@@ -71,15 +70,22 @@ void ajouteUtilisateur(const char* nom, const char* motDePasse)
     
     if (fb == -1)
     {
-      std::cerr << "Erreur : Impossible d'ouvrir ou de créer le fichier." << std::endl;
       return;
     }
 
     UTILISATEUR utilisateur;
+    
+    while(read(fb, &utilisateur, sizeof(UTILISATEUR)))
+    {
+      if(strcmp(nom, utilisateur.nom) == 0)
+      {
+        close(fb);
+        return;
+      }
+    }
 
     strcpy(utilisateur.nom, nom);
     utilisateur.hash = hash(motDePasse);
-
 
     lseek(fb, 0, SEEK_END);
 
@@ -94,11 +100,12 @@ void ajouteUtilisateur(const char* nom, const char* motDePasse)
 ////////////////////////////////////////////////////////////////////////////////////
 int verifieMotDePasse(int pos, const char* motDePasse)
 {
-  int fb = open("utilisateurs.dat", O_RDWR | O_CREAT, 0644), hassh;
-
-  if (fb == -1)
+  int fb = open("utilisateurs.dat", O_RDONLY), hassh;
+  
+  if(fb == -1)
   {
-    std::cerr << "Erreur : Impossible d'ouvrir ou de créer le fichier." << std::endl;
+    std::cerr << "Pas de fichier" << std::endl;
+    return -1;
   }
 
   UTILISATEUR utilisateur;
@@ -118,10 +125,9 @@ int verifieMotDePasse(int pos, const char* motDePasse)
 int listeUtilisateurs(UTILISATEUR *vecteur) // vecteur est un pointeur vers UTILISATEUR
 {
     int fb = open("utilisateurs.dat", O_RDONLY ), cpt = 0;
-    if (fb == -1)
+    if(fb == -1)
     {
-        std::cerr << "Erreur : Impossible d'ouvrir ou de créer le fichier." << std::endl;
-        return -1;
+      return -1;
     }
 
     while(cpt < 50 && read(fb, &vecteur[cpt], sizeof(UTILISATEUR)) > 0)

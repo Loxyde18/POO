@@ -20,10 +20,6 @@ MyWindow::MyWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MyWindow)
     ui->tableWidgetClients->horizontalHeader()->setStretchLastSection(true);
     ui->tableWidgetClients->verticalHeader()->setVisible(false);
     ui->tableWidgetClients->horizontalHeader()->setStyleSheet("background-color: lightyellow");
-
-    /// Exemples d'utilisation (à supprimer)
-    setResultat(" ---- Bonjour !!! ---- ");
-    ajouteTupleTableUtilisateurs("wagner",10);
     afficher();
 }
 
@@ -145,7 +141,14 @@ void MyWindow::on_pushButtonLogin_clicked()
   }
   else
   {
-    setResultat("Bonjour !");
+    if(position == -1)
+    {
+      setResultat("Pas De Fichier !! (Bouton Login) =(");
+    }
+    else
+    {
+      setResultat("Bonjour Utilisateur !! =)");
+    }
   }
 
   if(nouvelUtilisateur == 0)
@@ -161,9 +164,15 @@ void MyWindow::on_pushButtonLogin_clicked()
   if(nouvelUtilisateur == 1)
   {
     ajouteUtilisateur(nom, motDePasse);
-    setResultat("Ajouté ! =)");
+    if(position > 0)
+    {
+      setResultat("Utilisateur Déjà Existant ! =(");
+    }
+    else
+    {
+      setResultat("Ajouté ! =)");
+    }
   }
-  printf("Clic sur bouton LOGIN : --%s--%s--%d--\n",nom,motDePasse,nouvelUtilisateur);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,11 +183,17 @@ void MyWindow::on_pushButtonAfficheFichier_clicked()
   int i = 0;
   UTILISATEUR vect[50];
   int cpt = listeUtilisateurs(vect);
-  printf("%d", cpt);
-  while(i < cpt)
+
+  if(cpt == -1)
   {
-    ajouteTupleTableUtilisateurs(vect[i].nom, vect[i].hash);
-    i++;
+    setResultat("Pas De Fichier (Bouton Afficher)");
   }
-  printf("Clic sur bouton AFFICHER\n");
+  else
+  {
+    while(i < cpt)
+    {
+      ajouteTupleTableUtilisateurs(vect[i].nom, vect[i].hash);
+      i++;
+    }
+  }
 }
