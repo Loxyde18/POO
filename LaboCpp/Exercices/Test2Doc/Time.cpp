@@ -48,7 +48,7 @@ namespace planning{
             cout << "0" << hours << "h" << "0" << minutes << endl;
         } 
     }
-
+    
     int Time::getHour() const {
         return hours;
     }

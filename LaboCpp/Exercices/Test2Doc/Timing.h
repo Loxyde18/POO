@@ -21,6 +21,7 @@ namespace planning{
         static const string SATURDAY;
         static const string SUNDAY;
         Timing();
+        ~Timing();
         void setDay(const string d);
         void setStart(const Time s);
         void setDuration(const Time du);

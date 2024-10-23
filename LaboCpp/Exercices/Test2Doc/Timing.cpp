@@ -29,6 +29,10 @@ namespace planning
         setDuration(du);
     }
 
+    Timing::~Timing(){
+
+    }
+    
     void Timing::display() const {
         cout << "Jour: " << day << endl;
 
