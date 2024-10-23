@@ -2,7 +2,7 @@
 
 int estPresent(const char* nom)
 {
-  int fb = open("utilisateurs.dat", O_RDONLY);
+  int fb = open(FICHIER_UTILISATEURS, O_RDONLY);
   
   if (fb == -1)
   {
@@ -47,7 +47,7 @@ int hash(const char* motDePasse)
 
 void afficher()
 {
-  int fb = open("utilisateurs.dat", O_RDONLY);
+  int fb = open(FICHIER_UTILISATEURS, O_RDONLY);
   
   if(fb == -1)
   {
@@ -66,7 +66,7 @@ void afficher()
 ////////////////////////////////////////////////////////////////////////////////////
 void ajouteUtilisateur(const char* nom, const char* motDePasse)
 {
-  int fb = open("utilisateurs.dat", O_RDWR | O_CREAT, 0644);
+  int fb = open(FICHIER_UTILISATEURS, O_RDWR | O_CREAT, 0644);
     
     if (fb == -1)
     {
@@ -100,7 +100,7 @@ void ajouteUtilisateur(const char* nom, const char* motDePasse)
 ////////////////////////////////////////////////////////////////////////////////////
 int verifieMotDePasse(int pos, const char* motDePasse)
 {
-  int fb = open("utilisateurs.dat", O_RDONLY), hassh;
+  int fb = open(FICHIER_UTILISATEURS, O_RDONLY), hassh;
   
   if(fb == -1)
   {
@@ -124,7 +124,7 @@ int verifieMotDePasse(int pos, const char* motDePasse)
 ////////////////////////////////////////////////////////////////////////////////////
 int listeUtilisateurs(UTILISATEUR *vecteur) // vecteur est un pointeur vers UTILISATEUR
 {
-    int fb = open("utilisateurs.dat", O_RDONLY ), cpt = 0;
+    int fb = open(FICHIER_UTILISATEURS, O_RDONLY ), cpt = 0;
     if(fb == -1)
     {
       return -1;
