@@ -33,7 +33,7 @@ namespace planning{
     void Time::display() const{
         if(hours > 9 && minutes > 9)
         {
-            cout << hours << "h" << minutes << endl;
+            cout << hours << "H" << minutes << endl;
         }
         else if(hours < 10 && minutes > 9)
         {
