@@ -1,8 +1,5 @@
-#include <cstring>
-#include <iostream>
 #include "Time.h"
 
-using namespace std;
 namespace planning{
     Time::Time()
     {
@@ -33,7 +30,7 @@ namespace planning{
     void Time::display() const{
         if(hours > 9 && minutes > 9)
         {
-            cout << hours << "H" << minutes << endl;
+            cout << hours << "h" << minutes << endl;
         }
         else if(hours < 10 && minutes > 9)
         {
@@ -46,7 +43,7 @@ namespace planning{
         else if(hours < 9 && minutes < 9)
         {
             cout << "0" << hours << "h" << "0" << minutes << endl;
-        } 
+        }
     }
     
     int Time::getHour() const {
@@ -64,6 +61,8 @@ namespace planning{
     void Time::setMinute(int m) {
         minutes = m;
     }
+
+    //Opérateurs
 
     Time& Time::operator=(const Time& t)
     {
@@ -91,7 +90,7 @@ namespace planning{
         }
     return resultat;
     }
-
+    
     Time operator+(int minutesAdd, const Time& t)
     {
         Time resultat = t;
@@ -114,5 +113,105 @@ namespace planning{
         
         return resultat;
     }
+
+    Time Time::operator-(int MinutesSou) const {
+
+        Time resultat = *this;
+        int Convert = resultat.hours * 60 + resultat.minutes;
+        Convert -= MinutesSou;
+
+        if (Convert < 0) 
+        {
+            Convert = abs(Convert);
+        }
+
+        resultat.hours = Convert / 60;
+        resultat.minutes = Convert % 60;
+
+        return resultat;
+    }
+
+    Time operator-(int MinutesSou, const Time& t)
+    {
+        Time resultat = t;
+        resultat = resultat - MinutesSou;
+        return resultat;
+    }
+
+    Time operator-(const Time& t1, const Time& t2)
+    {
+        Time resultat;
+
+        resultat.hours = abs(t1.hours - t2.hours);
+        resultat.minutes = abs(t1.minutes - t2.minutes);
+
+        return resultat;
+    }
+
+    int Time::operator<(const Time& t2)
+    {
+        return compH(t2)==-1;
+    }
+
+    int Time::operator>(const Time& t2)
+    {
+        return compH(t2)== 1;
+    }
+
+    int Time::operator==(const Time& t2)
+    {
+        return compH(t2)== 0;
+    }
+
+    int Time::compH(const Time& t2)
+    {
+        Time resultat = t2;
+        if (hours < resultat.hours) return -1;
+        if (hours > resultat.hours) return 1;
+        // même heures
+        if (minutes < resultat.minutes) return -1;
+        if (minutes > resultat.minutes) return 1;
+        // minutes égales
+        return 0;
+    }
+
+    istream& operator>>(istream& s, Time& t)
+    {
+        int h, m;
+        do
+        {
+            cout << "Hours : ";
+            s >> t.hours;
     
+        } while(t.hours < 0 || t.hours >= 24);
+
+        do
+        {
+            cout << "Minutes : ";
+            s >> t.minutes;
+        } while(t.minutes < 0 || t.minutes >= 60);
+
+        return s;
+    }
+
+    ostream& operator<<(ostream& s, const Time& t)
+    {
+        if(t.hours > 9 && t.minutes > 9)
+        {
+            s << t.hours << "h" << t.minutes << endl;
+        }
+        else if(t.hours < 10 && t.minutes > 9)
+        {
+            s << "0" << t.hours << "h" << t.minutes << endl;
+        }
+        else if(t.hours > 9 && t.minutes < 9)
+        {
+            s << t.hours << "h" << "0" << t.minutes << endl;
+        }
+        else if(t.hours < 9 && t.minutes < 9)
+        {
+            s << "0" << t.hours << "h" << "0" << t.minutes << endl;
+        }
+        return s;
+    }
 } 
