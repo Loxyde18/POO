@@ -23,7 +23,7 @@ namespace planning{
         title = nullptr;
         setTitle(e.getTitle());
         timing = nullptr;
-        timing = new Timing(*(e.timing));
+        if (e.timing != nullptr) timing = new Timing(*(e.timing));
     }
 
     Event::~Event()

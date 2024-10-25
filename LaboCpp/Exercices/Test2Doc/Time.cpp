@@ -31,22 +31,22 @@ namespace planning{
     }
 
     void Time::display() const{
-        if(hours > 9 && minutes > 9)
+        if(hours >= 9 && minutes >= 9)
         {
-            cout << hours << "H" << minutes << endl;
+            cout << hours << "h" << minutes << endl;
         }
-        else if(hours < 10 && minutes > 9)
+        else if(hours < 10 && minutes >= 9)
         {
             cout << "0" << hours << "h" << minutes << endl;
         }
-        else if(hours > 9 && minutes < 9)
+        else if(hours >= 9 && minutes <= 9)
         {
             cout << hours << "h" << "0" << minutes << endl;
         }
-        else if(hours < 9 && minutes < 9)
+        else if(hours <= 9 && minutes <= 9)
         {
             cout << "0" << hours << "h" << "0" << minutes << endl;
-        } 
+        }
     }
     
     int Time::getHour() const {

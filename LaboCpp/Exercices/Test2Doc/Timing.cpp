@@ -35,8 +35,12 @@ namespace planning
     
     void Timing::display() const {
         cout << "Jour: " << day << endl;
+        cout << "Start: ";
+        start.display();
+        cout << "Duration: ";
+        duration.display();
 
-        if(start.getHour() > 9 && start.getMinute() > 9)
+/*        if(start.getHour() > 9 && start.getMinute() > 9)
         {
             cout << "Start: " << start.getHour() << "h" << start.getMinute() << endl;
         }
@@ -69,7 +73,7 @@ namespace planning
         else if(duration.getHour() < 9 && duration.getMinute() < 9)
         {
             cout << "Durée: " << "0" << duration.getHour() << "h" << duration.getMinute() << "0" << endl;
-        }
+        }*/
     }
 
     void Timing::setDay(const string d){
