@@ -177,21 +177,24 @@ namespace planning{
 
     istream& operator>>(istream& s, Time& t)
     {
-        int h, m;
-        do
-        {
-            cout << "Hours : ";
-            s >> t.hours;
-    
-        } while(t.hours < 0 || t.hours >= 24);
+        string heure;
+        char milieu;
+        int i = 0;
+        do {
+            if(i > 0)
+            {
+                cout << "Saisissez une heure : ";
+            }
+            s >> heure;
+            stringstream convertisseur(heure);
+            convertisseur >> t.hours >> milieu >> t.minutes;
 
-        do
-        {
-            cout << "Minutes : ";
-            s >> t.minutes;
-        } while(t.minutes < 0 || t.minutes >= 60);
-
-        return s;
+            if (milieu == 'h' && t.hours >= 0 && t.hours < 24 && t.minutes >= 0 && t.minutes < 60) 
+            {
+                return s;
+            }
+            i++;
+        } while (true);
     }
 
     ostream& operator<<(ostream& s, const Time& t)

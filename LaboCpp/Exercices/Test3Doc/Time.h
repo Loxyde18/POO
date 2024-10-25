@@ -1,5 +1,6 @@
 #include <cstring>
 #include <iostream>
+#include <sstream>
 #ifndef TIME_H
 #define TIME_H
 
