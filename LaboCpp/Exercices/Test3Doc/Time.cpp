@@ -1,5 +1,8 @@
+#include <cstring>
+#include <iostream>
 #include "Time.h"
 
+using namespace std;
 namespace planning{
     Time::Time()
     {
@@ -27,24 +30,11 @@ namespace planning{
         setMinute(e.getMinute());
     }
 
-    void Time::display() const{
-        if(hours > 9 && minutes > 9)
-        {
-            cout << hours << "h" << minutes << endl;
-        }
-        else if(hours < 10 && minutes > 9)
-        {
-            cout << "0" << hours << "h" << minutes << endl;
-        }
-        else if(hours > 9 && minutes < 9)
-        {
-            cout << hours << "h" << "0" << minutes << endl;
-        }
-        else if(hours < 9 && minutes < 9)
-        {
-            cout << "0" << hours << "h" << "0" << minutes << endl;
-        }
+    void Time::display() const
+    {
+        cout << (hours < 10 ? "0" : "") << hours << "h" << (minutes < 10 ? "0" : "") << minutes;
     }
+
     
     int Time::getHour() const {
         return hours;
@@ -62,19 +52,16 @@ namespace planning{
         minutes = m;
     }
 
-    //Opérateurs
-
     Time& Time::operator=(const Time& t)
     {
         hours = t.hours;
         minutes = t.minutes;
-        cout << "feur" << endl;
         return (*this);
     }
 
-    Time Time::operator+(int minutesAdd) const
+    Time Time::operator+(int minutesAdd)
     {
-        Time resultat = *this;
+        /*Time resultat = *this;
 
 		if(minutesAdd == 0)
 		{
@@ -88,9 +75,10 @@ namespace planning{
             resultat.hours += 1;
             resultat.minutes %= 60;
         }
-    return resultat;
+    return resultat;*/
+    return Time(hours*60+minutes+minutesAdd);
     }
-    
+
     Time operator+(int minutesAdd, const Time& t)
     {
         Time resultat = t;
@@ -115,18 +103,19 @@ namespace planning{
     }
 
     Time Time::operator-(int MinutesSou) const {
-
         Time resultat = *this;
-        int Convert = resultat.hours * 60 + resultat.minutes;
-        Convert -= MinutesSou;
+        
+        int totalMinutes = hours * 60 + minutes;
+        totalMinutes -= MinutesSou;
 
-        if (Convert < 0) 
+        if (totalMinutes < 0)
         {
-            Convert = abs(Convert);
+            totalMinutes = abs(totalMinutes);
         }
 
-        resultat.hours = Convert / 60;
-        resultat.minutes = Convert % 60;
+        
+        resultat.hours = totalMinutes / 60;
+        resultat.minutes = totalMinutes % 60;
 
         return resultat;
     }
@@ -138,41 +127,52 @@ namespace planning{
         return resultat;
     }
 
-    Time operator-(const Time& t1, const Time& t2)
+    Time operator-(const Time &t1, const Time &t2)
     {
-        Time resultat;
+        Time temp;
+        int resultat;
 
-        resultat.hours = abs(t1.hours - t2.hours);
-        resultat.minutes = abs(t1.minutes - t2.minutes);
+        int minA = (t1.hours * 60) - t1.minutes;
+        int minB = (t2.hours * 60) - t2.minutes;
 
-        return resultat;
+        return resultat = abs(minA - minB);
     }
 
-    int Time::operator<(const Time& t2)
+    int Time::operator>(const Time &t)
     {
-        return compH(t2)==-1;
+        return compH(t) == -1;
     }
 
-    int Time::operator>(const Time& t2)
+    int Time::operator<(const Time &t)
     {
-        return compH(t2)== 1;
+        return compH(t) == 1;
     }
 
-    int Time::operator==(const Time& t2)
+    int Time::operator==(const Time &t)
     {
-        return compH(t2)== 0;
+        return compH(t) == 0;
     }
 
-    int Time::compH(const Time& t2)
+    int Time::compH(const Time &t)
     {
-        Time resultat = t2;
-        if (hours < resultat.hours) return -1;
-        if (hours > resultat.hours) return 1;
-        // même heures
-        if (minutes < resultat.minutes) return -1;
-        if (minutes > resultat.minutes) return 1;
-        // minutes égales
+        if (hours < t.hours)
+            return 1;
+        if (hours > t.hours)
+            return -1;
+
+        if (minutes < t.minutes)
+            return 1;
+        if (minutes > t.minutes)
+            return -1;
+
+        //égalité
         return 0;
+    }
+
+    ostream &operator<<(ostream &s, const Time &t)
+    {
+        s << t.hours << "h" << t.minutes;
+        return s;
     }
 
     istream& operator>>(istream& s, Time& t)
@@ -180,11 +180,14 @@ namespace planning{
         string heure;
         char milieu;
         int i = 0;
-        do {
+
+        do
+        {
             if(i > 0)
             {
                 cout << "Saisissez une heure : ";
             }
+
             s >> heure;
             stringstream convertisseur(heure);
             convertisseur >> t.hours >> milieu >> t.minutes;
@@ -197,24 +200,29 @@ namespace planning{
         } while (true);
     }
 
-    ostream& operator<<(ostream& s, const Time& t)
+    Time Time::operator++()
     {
-        if(t.hours > 9 && t.minutes > 9)
-        {
-            s << t.hours << "h" << t.minutes << endl;
-        }
-        else if(t.hours < 10 && t.minutes > 9)
-        {
-            s << "0" << t.hours << "h" << t.minutes << endl;
-        }
-        else if(t.hours > 9 && t.minutes < 9)
-        {
-            s << t.hours << "h" << "0" << t.minutes << endl;
-        }
-        else if(t.hours < 9 && t.minutes < 9)
-        {
-            s << "0" << t.hours << "h" << "0" << t.minutes << endl;
-        }
-        return s;
+        (*this) = (*this) + 1;
+        return (*this);
+    }
+
+    Time Time::operator++(int)
+    {
+        Time t(*this);
+        (*this) = (*this) + 1;
+        return t;
+    }
+
+    Time Time::operator--()
+    {
+        (*this) = (*this) - 1;
+        return (*this);
+    }
+
+    Time Time::operator--(int)
+    {
+        Time t(*this);
+        (*this) = (*this) - 1;
+        return t;
     }
 } 

@@ -32,11 +32,15 @@ namespace planning{
 
         //Opérateur
         Time& operator=(const Time&);
-        Time operator+(int) const;
+        Time operator+(int);
         Time operator-(int) const;
         int operator<(const Time&);
         int operator>(const Time&);
         int operator==(const Time&);
+        Time operator++();
+        Time operator++(int);
+        Time operator--();
+        Time operator--(int);
     };
 
 }
