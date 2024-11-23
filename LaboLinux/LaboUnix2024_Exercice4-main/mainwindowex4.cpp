@@ -198,31 +198,40 @@ void MainWindowEx4::on_pushButtonDemarrerTraitements_clicked()
 void MainWindowEx4::on_pushButtonVider_clicked()
 {
   fprintf(stderr,"Clic sur le bouton Vider\n");
-  // TO DO
+  ui->lineEditResultat1->clear();
+  ui->lineEditResultat2->clear();
+  ui->lineEditResultat3->clear();
+
+  ui->lineEditGroupe1->clear();
+  ui->lineEditGroupe2->clear();
+  ui->lineEditGroupe3->clear();
 }
 
 void MainWindowEx4::on_pushButtonQuitter_clicked()
 {
   fprintf(stderr,"Clic sur le bouton Quitter\n");
+  kill(idFils1, SIGUSR1);
+  kill(idFils2, SIGUSR1);
+  kill(idFils3, SIGUSR1);
   close();
 }
 
 void MainWindowEx4::on_pushButtonAnnuler1_clicked()
 {
   fprintf(stderr,"Clic sur le bouton Annuler1\n");
-  kill(idFils1, 2);
+  kill(idFils1, SIGUSR1);
 }
 
 void MainWindowEx4::on_pushButtonAnnuler2_clicked()
 {
   fprintf(stderr,"Clic sur le bouton Annuler2\n");
-  kill(idFils2, 2);
+  kill(idFils2, SIGUSR1);
 }
 
 void MainWindowEx4::on_pushButtonAnnuler3_clicked()
 {
   fprintf(stderr,"Clic sur le bouton Annuler3\n");
-  kill(idFils3, 2);
+  kill(idFils3, SIGUSR1);
 }
 
 void MainWindowEx4::on_pushButtonAnnulerTous_clicked()
