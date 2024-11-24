@@ -34,7 +34,6 @@ WindowClient::WindowClient(QWidget *parent):QMainWindow(parent),ui(new Ui::Windo
     exit(EXIT_FAILURE);
   }
 
-
   // Envoi d'une requete d'identification
   // TO DO (etape 5)
 
@@ -107,12 +106,18 @@ void WindowClient::on_pushButtonEnvoyer_clicked()
   strcpy(message.texte, text);
   
   if (msgsnd(idQ, &message, sizeof(MESSAGE) - sizeof(long), 0) == -1) {
-    perror("(SERVEUR) Erreur msgsnd");
+    perror("Erreur msgsnd");
     exit(EXIT_FAILURE);
   }
-  
-  msgrcv(idQ, &recois, sizeof(MESSAGE) - sizeof(long), 1, 0);
+  fprintf(stderr, "%ld       pid : %d      msg : %s\n", message.type, message.expediteur, message.texte);
+
+  if (msgrcv(idQ, &recois, sizeof(MESSAGE) - sizeof(long), 0, 0) == -1){
+    perror("Erreur msgrcv");
+    exit(EXIT_FAILURE);
+  }
+  fprintf(stderr, "blablabla :   %s, %d\n", recois.texte, recois.expediteur);
   setRecu(recois.texte);
+  
 }
 
 void WindowClient::on_pushButtonQuitter_clicked()
