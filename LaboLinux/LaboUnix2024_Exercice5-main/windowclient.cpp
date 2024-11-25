@@ -15,6 +15,7 @@ extern WindowClient *w;
 
 extern char nomClient[40];
 int idQ; // identifiant de la file de message
+void handlerSIGUSR1(int);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,11 +35,32 @@ WindowClient::WindowClient(QWidget *parent):QMainWindow(parent),ui(new Ui::Windo
     exit(EXIT_FAILURE);
   }
 
+
   // Envoi d'une requete d'identification
   // TO DO (etape 5)
+  MESSAGE message;
+  message.type = 1;
+  message.expediteur = getpid();
+  strcpy(message.texte, "Identification");
+
+  if (msgsnd(idQ, &message, sizeof(MESSAGE) - sizeof(long), 0) == -1) {
+      perror("Erreur lors de l'envoi de la requête d'identification");
+      exit(EXIT_FAILURE);
+  }
 
   // Armement du signal SIGUSR1
   // TO DO (etape 4)
+  struct sigaction A;
+  A.sa_handler = handlerSIGUSR1;
+  sigemptyset(&A.sa_mask);
+  A.sa_flags = 0;
+
+  if (sigaction(SIGUSR1,&A,NULL) == -1)
+  {
+    perror("Erreur de sigaction");
+    exit(1);
+  }
+
 }
 
 WindowClient::~WindowClient()
@@ -98,7 +120,7 @@ void WindowClient::on_pushButtonEnvoyer_clicked()
 {
   fprintf(stderr,"Clic sur le bouton Envoyer\n");
   // TO DO (etapes 2, 3, 4)
-  MESSAGE message, recois;
+  MESSAGE message;
 
   message.type = 1;  // Type pour le client
   message.expediteur = getpid();
@@ -109,20 +131,13 @@ void WindowClient::on_pushButtonEnvoyer_clicked()
     perror("Erreur msgsnd");
     exit(EXIT_FAILURE);
   }
-  fprintf(stderr, "%ld       pid : %d      msg : %s\n", message.type, message.expediteur, message.texte);
-
-  if (msgrcv(idQ, &recois, sizeof(MESSAGE) - sizeof(long), 0, 0) == -1){
-    perror("Erreur msgrcv");
-    exit(EXIT_FAILURE);
-  }
-  fprintf(stderr, "blablabla :   %s, %d\n", recois.texte, recois.expediteur);
-  setRecu(recois.texte);
-  
 }
 
 void WindowClient::on_pushButtonQuitter_clicked()
 {
   fprintf(stderr,"Clic sur le bouton Quitter\n");
+  if (msgctl(idQ, IPC_RMID, NULL) == -1) perror("(SERVEUR) Erreur lors de la suppression de la file de messages");
+  else fprintf(stderr, "(SERVEUR)File de messages supprimée avec succès.\n");
   exit(1);
 }
 
@@ -130,3 +145,14 @@ void WindowClient::on_pushButtonQuitter_clicked()
 ///// Handlers de signaux ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TO DO (etape 4)
+
+void handlerSIGUSR1(int sig){
+  (void) sig;
+  MESSAGE recois;
+  if (msgrcv(idQ, &recois, sizeof(MESSAGE) - sizeof(long), 0, 0) == -1){
+    perror("Erreur msgrcv");
+    exit(EXIT_FAILURE);
+  }
+  fprintf(stderr, "CLIENT(%d) Message : %s\n", recois.expediteur, recois.texte);
+  w->setRecu(recois.texte);
+}
