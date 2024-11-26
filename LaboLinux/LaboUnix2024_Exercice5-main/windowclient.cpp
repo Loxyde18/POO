@@ -14,6 +14,7 @@ extern WindowClient *w;
 #include "protocole.h" // contient la cle et la structure d'un message
 
 extern char nomClient[40];
+int GlobalPid;
 int idQ; // identifiant de la file de message
 void handlerSIGUSR1(int);
 
@@ -48,6 +49,13 @@ WindowClient::WindowClient(QWidget *parent):QMainWindow(parent),ui(new Ui::Windo
       exit(EXIT_FAILURE);
   }
 
+  MESSAGE recois;
+  if (msgrcv(idQ, &recois, sizeof(MESSAGE) - sizeof(long), 0, 0) == -1){
+    perror("Erreur msgrcv");
+    exit(EXIT_FAILURE);
+  }
+  fprintf(stderr, "%s\n", recois.texte);
+  GlobalPid = recois.expediteur;
   // Armement du signal SIGUSR1
   // TO DO (etape 4)
   struct sigaction A;
@@ -136,8 +144,8 @@ void WindowClient::on_pushButtonEnvoyer_clicked()
 void WindowClient::on_pushButtonQuitter_clicked()
 {
   fprintf(stderr,"Clic sur le bouton Quitter\n");
-  if (msgctl(idQ, IPC_RMID, NULL) == -1) perror("(SERVEUR) Erreur lors de la suppression de la file de messages");
-  else fprintf(stderr, "(SERVEUR)File de messages supprimée avec succès.\n");
+  kill(GlobalPid, SIGINT);
+  fprintf(stderr,"Client Déconnecté\n");
   exit(1);
 }
 

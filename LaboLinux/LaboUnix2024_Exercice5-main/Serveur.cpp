@@ -9,9 +9,9 @@
 #include "protocole.h" // contient la cle et la structure d'un message
 
 int idQ;
-int pid1,pid2;
+int pid1, pid2;
 
-//void handlerSIGINT(int sig);
+void handlerSIGINT(int sig);
 
 int main()
 {
@@ -20,91 +20,119 @@ int main()
 
   // Armement du signal SIGINT
   // TO DO (etape 6)
-  /*struct sigaction as;
+  struct sigaction as;
   as.sa_handler = handlerSIGINT;
   sigemptyset(&as.sa_mask);
   as.sa_flags = 0;
 
-  if (sigaction(SIGINT,&as,NULL) == -1)
+  if (sigaction(SIGINT, &as, NULL) == -1)
   {
     perror("Erreur de sigaction");
     exit(1);
-  }*/
+  }
 
   // Creation de la file de message
-  fprintf(stderr,"(SERVEUR) Creation de la file de messages\n");
+  fprintf(stderr, "(SERVEUR) Creation de la file de messages\n");
   // TO DO (etape 2)
   idQ = msgget(CLE, IPC_CREAT | 0666);
-  if (idQ == -1) {
-      perror("(SERVEUR) Erreur msgget");
-      exit(EXIT_FAILURE);
+  if (idQ == -1)
+  {
+    perror("(SERVEUR) Erreur msgget");
+    exit(EXIT_FAILURE);
   }
-  else{
-    fprintf(stderr,"file créé\n");
+  else
+  {
+    fprintf(stderr, "file créé\n");
   }
-
   // Attente de connection de 2 clients
   // TO DO (etape 5)
   //1er Client
-  while(true){
-    fprintf(stderr,"(SERVEUR) Attente de connection d'un premier client...\n");
+  while (true)
+  {
+    fprintf(stderr, "(SERVEUR) Attente de connection d'un premier client...\n");
     MESSAGE identifiant;
-    if(msgrcv(idQ, &identifiant, sizeof(MESSAGE) - sizeof(long), 1, 0) == -1){
-      fprintf(stderr,"ERREUR");
+    if (msgrcv(idQ, &identifiant, sizeof(MESSAGE) - sizeof(long), 1, 0) == -1)
+    {
+      fprintf(stderr, "ERREUR");
       exit(1);
     }
-  pid1 = identifiant.expediteur;
-  break;
+    pid1 = identifiant.expediteur;
+
+    MESSAGE message;
+    message.type = identifiant.expediteur; // Réponse au client
+    message.expediteur = getpid();         // PID du serveur
+    strcpy(message.texte, "Vous êtes connecté au server !");
+    if (msgsnd(idQ, &message, sizeof(MESSAGE) - sizeof(long), 0) == -1)
+    {
+      perror("(SERVEUR) Erreur lors de l'envoi du PID au client");
+      exit(EXIT_FAILURE);
+    }
+    break;
   }
-  fprintf(stderr,"pid client 1 : %d\n", pid1);
+  fprintf(stderr, "pid client 1 : %d\n", pid1);
 
   //2ème Client
-  while(true)
+  while (true)
   {
-    fprintf(stderr,"(SERVEUR) Attente de connection d'un second client...\n");
+    fprintf(stderr, "(SERVEUR) Attente de connection d'un second client...\n");
     MESSAGE identifiant2;
-    if(msgrcv(idQ, &identifiant2, sizeof(MESSAGE) - sizeof(long), 1, 0) == -1){
-      fprintf(stderr,"ERREUR");
+    if (msgrcv(idQ, &identifiant2, sizeof(MESSAGE) - sizeof(long), 1, 0) == -1)
+    {
+      fprintf(stderr, "ERREUR");
       exit(1);
     }
     pid2 = identifiant2.expediteur;
+    MESSAGE message;
+    message.type = identifiant2.expediteur; // Réponse au client
+    message.expediteur = getpid();         // PID du serveur
+    strcpy(message.texte, "Vous êtes connecté au server !");
+    if (msgsnd(idQ, &message, sizeof(MESSAGE) - sizeof(long), 0) == -1)
+    {
+      perror("(SERVEUR) Erreur lors de l'envoi du PID au client");
+      exit(EXIT_FAILURE);
+    }
     break;
   }
-  fprintf(stderr,"pid client 2 : %d\n", pid2);
+  fprintf(stderr, "pid client 2 : %d\n", pid2);
 
-
-  while(1) 
+  while (1)
   {
     // TO DO (etapes 3, 4 et 5)
 
     //En attente d'une requête
-  	fprintf(stderr,"(SERVEUR) Attente d'une requete...\n");
-    if (msgrcv(idQ, &requete, sizeof(MESSAGE) - sizeof(long), 1, 0) == -1) {
+    fprintf(stderr, "(SERVEUR) Attente d'une requete...\n");
+    if (msgrcv(idQ, &requete, sizeof(MESSAGE) - sizeof(long), 1, 0) == -1)
+    {
       perror("(SERVEUR) Erreur msgrcv");
       exit(EXIT_FAILURE);
     }
 
-    fprintf(stderr,"(SERVEUR) Requete recue de %d : --%s--\n",requete.expediteur,requete.texte);
+    fprintf(stderr, "(SERVEUR) Requete recue de %d : --%s--\n", requete.expediteur, requete.texte);
     fprintf(stderr, "%ld       pid : %d      msg : %s\n", requete.type, requete.expediteur, requete.texte);
 
     //Choix de mes destinataires
-    if (requete.expediteur == pid1) destinataire = pid2;
-    else destinataire = pid1;
+    if (requete.expediteur == pid1)
+      destinataire = pid2;
+    else
+      destinataire = pid1;
 
-
-    fprintf(stderr,"(SERVEUR) Envoi de la reponse a %d\n",destinataire);
+    fprintf(stderr, "(SERVEUR) Envoi de la reponse a %d\n", destinataire);
 
     //Envoie de la réponse du client 1 a client 2 ou l'inverse
     MESSAGE reponse;
     strcpy(reponse.texte, requete.texte);
     reponse.type = destinataire;
-    if (destinataire == pid1) reponse.expediteur = pid2;
-    else reponse.expediteur = pid1;
+    if (destinataire == pid1)
+      reponse.expediteur = pid2;
+    else
+      reponse.expediteur = pid1;
     msgsnd(idQ, &reponse, sizeof(MESSAGE) - sizeof(long), 0);
 
     //Envoie du signal a mes destinaires;
-    if (destinataire == pid2) kill(pid2, SIGUSR1);
-    else kill(pid1, SIGUSR1);
+    if (destinataire == pid2)
+      kill(pid2, SIGUSR1);
+    else
+      kill(pid1, SIGUSR1);
   }
 }
 
@@ -112,5 +140,11 @@ int main()
 ///// Handlers de signaux ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TO DO (etape 6)
-/*void handlerSIGINT(int sig){
-}*/
+void handlerSIGINT(int sig)
+{
+  if (msgctl(idQ, IPC_RMID, NULL) == -1)
+    perror("(SERVEUR) Erreur lors de la suppression de la file de messages");
+  else
+    fprintf(stderr, "(SERVEUR) File de messages supprimée avec succès.\n");
+  exit(1);
+}
