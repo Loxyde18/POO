@@ -167,31 +167,16 @@ namespace planning
     istream &operator>>(istream &s, Time &t)
     {
         string line;
-
-        // Lire et ignorer la balise <Time>
         getline(s, line); // <Time>
-
-        // Lire la balise <hour>
         getline(s, line); // <hour>
-
-        // Lire la valeur de hours
-        getline(s, line);
+        getline(s, line); // valeur de hours
         t.hours = stoi(line); // Convertit la ligne en entier
 
-        // Lire la balise </hour>
         getline(s, line); // </hour>
-
-        // Lire la balise <minute>
         getline(s, line); // <minute>
-
-        // Lire la valeur de minutes
-        getline(s, line);
+        getline(s, line); // valeur de minute
         t.minutes = stoi(line); // Convertit la ligne en entier
-
-        // Lire la balise </minute>
         getline(s, line); // </minute>
-
-        // Lire et ignorer la balise </Time>
         getline(s, line); // </Time>
 
         return s;

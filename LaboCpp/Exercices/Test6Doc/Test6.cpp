@@ -5,7 +5,7 @@ using namespace std;
 #include "Time.h"
 #include "Classroom.h"
 #include "Timing.h"
-//#include "Event.h"
+#include "Event.h"
 
 using namespace planning;
 
@@ -29,7 +29,7 @@ int main(int argc,char* argv[])
       case 1 : Essai1(); break;
       case 2 : Essai2(); break;
       case 3 : Essai3(); break;
-      //case 4 : Essai4(); break;
+      case 4 : Essai4(); break;
       default : fini = true ; break;
     }
   }
@@ -133,7 +133,7 @@ void Essai3()  // Attention : utilisez les flux texte (<< et >>) !!!!
 }
 
 /*********************************************************************************************/
-/*void Essai4()  // Attention : utilisez les flux texte (<< et >>) !!!!
+void Essai4()  // Attention : utilisez les flux texte (<< et >>) !!!!
 {
   cout << "----- 4. Sérialisation/Désérialisation d'un objet de la classe Event ------" << endl;
 
@@ -176,4 +176,4 @@ void Essai3()  // Attention : utilisez les flux texte (<< et >>) !!!!
   fichier4.close();
   E.display();
   cout << endl;
-}*/
+}

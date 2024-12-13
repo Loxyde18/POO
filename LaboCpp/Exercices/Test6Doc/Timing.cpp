@@ -173,15 +173,15 @@ namespace planning
     ostream &operator<<(ostream &s, const Timing &timing)
     {
         s << "<Timing>" << endl;
-        s << "   <day>" << endl;
-        s << "     " << timing.day << endl;
-        s << "   </day>" << endl;
-        s << "   <start>" << endl;
-        s << "     " << timing.start << endl;
-        s << "   </start>" << endl;
-        s << "   <duration>" << endl;
-        s << "     " << timing.duration << endl;
-        s << "   </duration>" << endl;
+        s << "<day>" << endl;
+        s << "" << timing.day << endl;
+        s << "</day>" << endl;
+        s << "<start>" << endl;
+        s << "" << timing.start << endl;
+        s << "</start>" << endl;
+        s << "<duration>" << endl;
+        s << "" << timing.duration << endl;
+        s << "</duration>" << endl;
         s << "</Timing>" << endl; //11
         return s;
     }
@@ -189,24 +189,30 @@ namespace planning
     istream &operator>>(istream &s, Timing &timing)
     {
         string line;
+        getline(s, line); //1 <Timing>
+        
+        getline(s, line); //2 <Day>
+        
+        getline(s, line); //3 valeur de day
+        
+        timing.day = line; // Donne la valeur de day a timing.day
+        getline(s, line); //4 </Day>
+        
 
-        getline(s, line); //1
-        getline(s, line); //2
-        getline(s, line); //3
-        timing.day = line;
-        getline(s, line); //4
-
-        getline(s, line); //5
-        getline(s, line); //6
+        getline(s, line); //5 <start>
+        
         s >> timing.start;
         getline(s, line); //7
+        
 
         getline(s, line); //8
-        getline(s, line); //9
+        
         s >> timing.duration;
         getline(s, line); //10
+        
 
         getline(s, line); //11
+        
         return s;
     }
 }
